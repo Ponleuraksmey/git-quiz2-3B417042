@@ -1,0 +1,106 @@
+# 儲存所有消費紀錄的串列 (list)
+spending_records = []
+
+while True:
+    print("\n--- 消費紀錄統計系統 ---")
+    print("1. 新增消費")
+    print("2. 顯示消費明細")
+    print("3. 顯示統計")
+    print("4. 退出系統")
+    print("-" * 24)
+
+    choice = input("請選擇功能: ").strip()
+
+    match choice:
+        # 1. 新增消費
+        case "1":
+            item = input("請輸入消費項目: ").strip()
+
+            # 檢查並取得有效金額
+            while True:
+                 temp_amount = input("請輸入金額: ").strip() # store amount that can write in integer and float
+
+                 # 檢查是否為空字串或包含非 ASCII 字元
+                 if temp_amount == "" or not temp_amount.isascii():
+                     print("請輸入大於 0 的數字，可包含小數點。")
+                     continue
+
+                # 移除第一個小數點，供後續檢查使用
+                # 例如 100.5 移除第一個小數點後是 1005；1.2.3 移除第一個小數點後仍有小數點，因此不是有效格式。
+                # replace("." , "" , 1) 只替換第一個小數點
+                 check_amount = temp_amount.replace(".", "", 1) 
+
+                # 檢查替換後還有 "."和替換後的字串不是純數字 (isdigit())
+                # isdigit() 如果字串全都是 0~9 的數字，會回傳 True
+                 if "." in check_amount or not check_amount.isdigit():
+                     print("請輸入大於 0 的數字，可包含小數點。")
+                     continue
+                 
+                 # 格式正確後，轉換為 float
+                 amount = float(temp_amount) #real amount
+
+                 # 轉換為 float 並檢查是否大於 0
+                 if amount <= 0:
+                     print("請輸入大於 0 的有效金額。")
+                     continue
+
+                 break # 金額格式與數值皆正確
+
+            # 建立 dict 儲存並加入 list
+            spending_record = {
+                "項目": item,
+                "金額": amount
+            }
+            spending_records.append(spending_record)
+            print("新增成功。")
+
+        # 2. 顯示消費明細
+        case "2":
+            if len(spending_records) == 0:
+                print("目前沒有消費紀錄。")
+            else:
+                print("\n--- 消費明細 ---")
+                print(f"{'編號':<4}  {'項目':<5}  {'金額':>4}")
+                print("-" * 24)
+
+                for i, spending_record in enumerate(spending_records, 1):
+                    print(f"{i:>4} {spending_record['項目']:<5} {spending_record['金額']:> 11.2f}")
+
+        # 3. 顯示統計
+        case "3":
+            if len(spending_records) == 0:
+                print("目前沒有消費紀錄。")
+            else:
+                # count of spending records
+                total_count = len(spending_records) 
+                # count of total amount
+                total_amount = 0.0 
+
+                # calculate total amount
+                for i in spending_records:
+                    total_amount += i["金額"]
+                # calculate average amount
+                average_amount = total_amount/total_count
+
+                # 依照總金額判斷顯示訊息
+                if total_amount < 300:
+                    message = "消費不多"
+                elif 300 <= total_amount < 500:
+                    message = "注意控制消費"
+                else:
+                    message = "已達提醒門檻"
+
+                print("\n--- 消費統計 ---")
+                print(f"消費筆數: {total_count}")
+                print(f"總金額: {total_amount:.2f} 元")
+                print(f"平均每筆金額: {average_amount:.2f} 元")
+                print(f"消費提醒: {message}")
+
+        # 4. 退出系統
+        case "4":
+            print("系統已退出。")
+            break
+
+        # 其他選項錯誤
+        case _:
+            print("選項錯誤，請重新選擇。")
