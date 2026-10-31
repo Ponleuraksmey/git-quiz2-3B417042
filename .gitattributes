@@ -1,0 +1,12 @@
+# Set the default behavior, in case people don't have core.autocrlf set.
+* text=auto
+
+# Explicitly declare text files you want to be normalized and converted
+# to native line endings on checkout.
+*.py text
+*.md text
+*.txt text
+
+# Ensure UTF-8 encoding for source files
+*.py working-tree-encoding=utf-8
+*.md working-tree-encoding=utf-8
